@@ -16,9 +16,18 @@ No test suite is configured.
 
 ## Architecture
 
-This is a single-page React app (Vite + React 19). All application logic lives in one file:
+This is a single-page React app (Vite + React 19). No routing, no global state library.
 
-- **`src/App.jsx`** — the entire app: state management, filtering logic, form handling, and rendered UI. No separate components, no routing, no global state library.
+### Component tree
+
+```
+App
+├── Summary          — displays income/expense/balance totals (computes them internally from transactions)
+├── TransactionForm  — add-transaction form with its own local field state; calls onAdd(transaction) prop
+└── TransactionList  — filterable transaction table with its own local filter state
+```
+
+- **`App.jsx`** — holds the `transactions` array in state and passes it down. The only cross-component action is `handleAdd`, passed to `TransactionForm` as `onAdd`.
 - **`src/App.css`** / **`src/index.css`** — all styles.
 
 ### Data model
@@ -29,12 +38,13 @@ Transactions are held in React state (not persisted). Each transaction has:
 { id, description, amount, type, category, date }
 // type: "income" | "expense"
 // category: "food" | "housing" | "utilities" | "transport" | "entertainment" | "salary" | "other"
-// amount: stored as a string (raw input value) — note: arithmetic on it will coerce to number via JS
+// amount: number
 ```
+
+The `categories` list is duplicated in `TransactionForm` and `TransactionList` — no shared constants file yet.
 
 ### Known issues (intentional — course starter)
 
-- `amount` is stored as a string, so `reduce` over amounts uses implicit JS coercion rather than `parseFloat`.
 - Summary cards show raw totals without proper number formatting.
 - The transaction list has no delete capability.
 - UI styling is minimal/rough by design.

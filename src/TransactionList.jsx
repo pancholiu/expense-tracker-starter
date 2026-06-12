@@ -7,12 +7,8 @@ function TransactionList({ transactions, onDelete }) {
   const [filterCategory, setFilterCategory] = useState("all");
 
   let filtered = transactions;
-  if (filterType !== "all") {
-    filtered = filtered.filter(t => t.type === filterType);
-  }
-  if (filterCategory !== "all") {
-    filtered = filtered.filter(t => t.category === filterCategory);
-  }
+  if (filterType !== "all") filtered = filtered.filter(t => t.type === filterType);
+  if (filterCategory !== "all") filtered = filtered.filter(t => t.category === filterCategory);
 
   return (
     <div className="transactions">
@@ -46,18 +42,17 @@ function TransactionList({ transactions, onDelete }) {
             <tr key={t.id}>
               <td>{t.date}</td>
               <td>{t.description}</td>
-              <td>{t.category}</td>
-              <td className={t.type === "income" ? "income-amount" : "expense-amount"}>
-                {t.type === "income" ? "+" : "-"}${t.amount}
+              <td><span className="category-badge">{t.category}</span></td>
+              <td className={t.type === 'income' ? 'income-amount' : 'expense-amount'}>
+                {t.type === 'income' ? '+' : '−'}${t.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </td>
               <td>
                 <button
                   className="delete-btn"
-                  onClick={() => {
-                    if (window.confirm('Delete this transaction?')) onDelete(t.id);
-                  }}
+                  onClick={() => { if (window.confirm('Delete this transaction?')) onDelete(t.id); }}
+                  title="Delete"
                 >
-                  Delete
+                  ×
                 </button>
               </td>
             </tr>
